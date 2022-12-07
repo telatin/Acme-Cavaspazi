@@ -15,4 +15,6 @@ my @nospazi = cavaspazi(@spazi);
 for my $item (@nospazi) {
     ok($item !~/ /, "Item has no spaces: <$item>");
 }
+
+ok( (scalar @spazi == scalar @nospazi), "Same items in input/output");
 done_testing();
