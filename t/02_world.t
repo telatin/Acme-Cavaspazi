@@ -31,4 +31,4 @@ for my $file (@files) {
     ok(($content !~ / /), "File $file does not contain spaces: $content");
 }
 
-done_testing;
+done_testing();
