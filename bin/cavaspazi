@@ -1,12 +1,13 @@
 #!/usr/bin/env perl
 # PODNAME: cavaspazi
-# ABSTRACT: Cavaspazi - a simple script to remove spaces from filenames or file contents
+# ABSTRACT: a simple script to remove spaces from filenames or file contents
 
 use strict;
 use warnings;
 use Getopt::Long;
 use Pod::Usage;
-
+use File::Basename;
+use File::Spec;
 my $rename = 0;
 my $substitute = 0;
 my $dry_run;
@@ -19,20 +20,30 @@ GetOptions(
     'verbose' => \$verbose,
     'h|help' => \$help,
 );
+
 pod2usage({-exitval => 0, -verbose => 2}) if $help;
+
 for my $file (@ARGV) {
+    my $basename = basename($file);
+    my $dirname = dirname($file);
+    # check if file exists
+    if (!-e $file) {
+        print STDERR "File $file does not exist. Skipping...\n";
+        next;
+    }
     if ($verbose) {
             my $type = -d $file ? 'directory' : 'file';
             print STDERR "Processing [$type] $file...\n"
     }
     if ($rename) {
 
-        my $new_file = $file;
+        my $new_file = $basename;
         $new_file =~ s/ /_/g;
+        my $dest = File::Spec->catfile($dirname, $new_file);
         if ($dry_run) {
             print STDERR "#mv \"$file\" \"$new_file\"";
         } else {
-            rename "$file", "$new_file" or die "Can't rename $file to $new_file: $!";
+            rename "$file", "$dest" or die "Can't rename $file to $dest: $!";
         }
     }
     elsif ($substitute) {
@@ -78,6 +89,10 @@ Substitute spaces with underscores in the contents of the files.
 =item B<-n, --dry-run>
 
 Do not actually rename or substitute anything, just print what would be done.
+
+=item B<-v, --verbose>
+
+Print what is being done.
 
 =item B<-h, --help>
 

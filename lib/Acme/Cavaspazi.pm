@@ -1,5 +1,5 @@
 package Acme::Cavaspazi;
-# ABSTRACT: a simple script to remove spaces from filenames or file contents, but also a tribute to old school robust bioinformatics tools
+# ABSTRACT: a simple function to remove spaces from strings or lists of strings
 
 use 5.012;
 use warnings;
@@ -9,7 +9,33 @@ our @ISA = qw(Exporter);
 # Export subroutine cavaspazi
 our @EXPORT = qw(cavaspazi);
 
-$Acme::Cavaspazi::VERSION = "0.1.0";
+$Acme::Cavaspazi::VERSION = "0.0.8";
+
+
+=head1 SYNOPSIS
+
+  use Acme::Cavaspazi;
+  my $input = "with spaces";
+  my $filepath = cavaspazi($input);
+
+
+=head2 cavaspazi()
+
+Remove spaces from the input string or the strings in the input array.
+
+Used in scalar context, returns a scalar. 
+
+  use Acme::Cavaspazi;
+  my $input = "with spaces";
+  print cavaspazi($input), "\n";
+
+Used in list context, returns a list:
+
+  use Acme::Cavaspazi;
+  my @input = ("with spaces", "and more spaces");
+  print ":".join(cavaspazi(@input), "\n");
+
+=cut
 
 sub cavaspazi {
     my @results = ();
@@ -27,4 +53,22 @@ sub cavaspazi {
     
 }
 
-1;
+=head1 SEE ALSO
+
+this module ships a binary script called L<cavaspazi> that can be used
+to remove spaces from filenames or file contents.
+
+=head1 ACKNOWLEDGEMENTS
+
+This module is a tribute to the resilience of pioneer bioinformaticians
+working with Perl to convert files and fix formats.
+
+The bioinformaticians trained by I<Nicola Vitulo> are grateful for the
+lack of spaces.
+
+In those foggy times a script called C<cavaspazi.pl> became a pillar
+of complex pipelines. It was cool, except it didn't remove spaces.
+
+=cut
+
+"VITULO";
