@@ -100,3 +100,6 @@ Print a brief help message and exits.
 
 =back
 
+=head1 SEE ALSO
+
+This module is a tribute to Nicola Vitulo. Read more on L<Acme::Cavaspazi>.
