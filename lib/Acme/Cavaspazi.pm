@@ -9,7 +9,7 @@ our @ISA = qw(Exporter);
 # Export subroutine cavaspazi
 our @EXPORT = qw(cavaspazi);
 
-$Acme::Cavaspazi::VERSION = "1.0.0";
+$Acme::Cavaspazi::VERSION = "1.0.1";
 
 
 =head1 SYNOPSIS
