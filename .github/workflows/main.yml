@@ -1,38 +1,29 @@
-on:
-  # Trigger analysis when pushing in master or pull requests, and when creating
-  # a pull request.
+---
+"on":
   push:
-    branches:
-      - main
+    paths-ignore:
+      - "**.md"
   pull_request:
-    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - "**.md"
   workflow_dispatch:
-
-name: DzilTest
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test:
     strategy:
+      fail-fast: false
       matrix:
-        perl: [ '5.34', '5.24', '5.18' ]
-    container:
-      image: perl:${{ matrix.perl }}
+        runs-on:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.runs-on }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Install system dependencies
-        run: |
-          apt-get install -y build-essential libssl-dev zlib1g-dev libpng-dev
-      - name: Install Dzil
-        run: |
-          # Install using cpanm
-          cpanm -qn Dist::Zilla
-
-      - name: Run build script
+      - uses: actions/checkout@v3
+      - uses: shogo82148/actions-setup-perl@v1
+      - name: Install DZIL
+        run: >
+          cpanm -qn Dist::Zilla::App::Command::cover
+      - name: DzilTest
         run: |
           dzil authordeps --missing | cpanm -qn
           dzil listdeps --author --missing  | cpanm -qn
           dzil test --author --verbose
-
-
