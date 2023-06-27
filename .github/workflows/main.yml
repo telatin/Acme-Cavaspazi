@@ -1,5 +1,4 @@
----
-"on":
+on:
   push:
     paths-ignore:
       - "**.md"
@@ -8,28 +7,23 @@
       - "**.md"
   workflow_dispatch:
 
-
-
 jobs:
   test:
     strategy:
       fail-fast: false
       matrix:
-        runs-on:
-          - ubuntu-latest
-        strategy:
-          matrix:
-            perl: [ '5.36', '5.24', '5.18' ]
-        container:
-          image: perl:${{ matrix.perl }}
-        steps:
-          - uses: actions/checkout@v3
-          - uses: shogo82148/actions-setup-perl@v1
-          - name: Install Dependencies
-            run: >
-              cpanm -qn Dist::Zilla
-          - name: Test
-            run: |
-              dzil authordeps --missing | cpanm -qn
-              dzil listdeps --author --missing  | cpanm -qn
-              dzil test --author --verbose
+        perl: [ '5.36', '5.24', '5.18' ]
+    runs-on: ubuntu-latest
+    container:
+      image: perl:${{ matrix.perl }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shogo82148/actions-setup-perl@v1
+      - name: Install Dependencies
+        run: >
+          cpanm -qn Dist::Zilla
+      - name: Test
+        run: |
+          dzil authordeps --missing | cpanm -qn
+          dzil listdeps --author --missing  | cpanm -qn
+          dzil test --author --verbose
