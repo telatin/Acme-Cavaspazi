@@ -23,7 +23,6 @@ jobs:
           fetch-depth: 0
       - name: Install system dependencies
         run: |
-          apt-get update
           apt-get install -y build-essential libssl-dev zlib1g-dev libpng-dev
       - name: Install Dzil
         run: |
