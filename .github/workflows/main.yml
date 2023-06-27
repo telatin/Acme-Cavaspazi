@@ -1,29 +1,35 @@
 on:
+  # Trigger analysis when pushing in master or pull requests, and when creating
+  # a pull request.
   push:
-    paths-ignore:
-      - "**.md"
+    branches:
+      - master
   pull_request:
-    paths-ignore:
-      - "**.md"
-  workflow_dispatch:
+    types: [opened, synchronize, reopened]
 
+name: Build
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        perl: [ '5.36', '5.24', '5.18' ]
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        perl: [ '5.34', '5.24', '5.18' ]
     container:
       image: perl:${{ matrix.perl }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: shogo82148/actions-setup-perl@v1
-      - name: Install Dependencies
-        run: >
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install Dzil
+        run: |
+          # Install using cpanm
           cpanm -qn Dist::Zilla
-      - name: Test
+
+      - name: Run build script
         run: |
           dzil authordeps --missing | cpanm -qn
           dzil listdeps --author --missing  | cpanm -qn
           dzil test --author --verbose
+
+
