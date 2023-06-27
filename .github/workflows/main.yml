@@ -24,8 +24,7 @@ jobs:
       - uses: shogo82148/actions-setup-perl@v1
       - name: Install Dependencies
         run: >
-          cpanm -qn Dist::Zilla::App::Command::cover
-          Devel::Cover::Report::Codecovbash Reply
+          cpanm -qn Dist::Zilla
       - name: Test
         run: |
           dzil authordeps --missing | cpanm -qn
