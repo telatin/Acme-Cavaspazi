@@ -47,6 +47,10 @@ for my $file (@ARGV) {
         }
     }
     elsif ($substitute) {
+        if (-d $file) {
+         print STDERR "Skipping: substitute only works with files...\n";
+	 next;
+	}
         open my $fh, '<', $file or die "Can't open $file: $!";
         my $content = do { local $/; <$fh> };
         close $fh;
