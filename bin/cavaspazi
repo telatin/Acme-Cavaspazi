@@ -21,19 +21,35 @@ GetOptions(
     'h|help' => \$help,
 );
 
-pod2usage({-exitval => 0, -verbose => 2}) if $help;
+sub usage {
+  print STDERR <<END;
+  cavaspazi [-s|-r] [options] PATHS...
 
+  -s, --substitute     Will replace spaces with underscore (text files)
+  -r, --rename         Will remove whitespaces from filenames (somewhat useful!)
+
+  -n, --dry-run        Do not rename, just print the actions
+  --verbose 
+  -h, --help
+END
+}
+usage() if $help;
+#pod2usage({-exitval => 0, -verbose => 2}) if $help;
+
+my $cnt = 0;
+my $tot = scalar @ARGV;
 for my $file (@ARGV) {
+    $cnt++;
     my $basename = basename($file);
     my $dirname = dirname($file);
     # check if file exists
     if (!-e $file) {
-        print STDERR "File $file does not exist. Skipping...\n";
+	print STDERR "$cnt/$tot File $file does not exist. Skipping...\n";
         next;
     }
     if ($verbose) {
             my $type = -d $file ? 'directory' : 'file';
-            print STDERR "Processing [$type] $file...\n"
+            print STDERR "$cnt/$tot Processing $dirname -> $basename [$type]...\n"
     }
     if ($rename) {
 
@@ -41,14 +57,14 @@ for my $file (@ARGV) {
         $new_file =~ s/ /_/g;
         my $dest = File::Spec->catfile($dirname, $new_file);
         if ($dry_run) {
-            print STDERR "#mv \"$file\" \"$new_file\"";
+            print  "#mv \"$file\" \"$dest\"\n";
         } else {
             rename "$file", "$dest" or die "Can't rename $file to $dest: $!";
         }
     }
     elsif ($substitute) {
         if (-d $file) {
-         print STDERR "Skipping: substitute only works with files...\n";
+         print STDERR "Skipping: substitute only works with files...\n" if ($verbose);
 	 next;
 	}
         open my $fh, '<', $file or die "Can't open $file: $!";
